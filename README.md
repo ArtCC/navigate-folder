@@ -1,167 +1,162 @@
-# 🗂️ Navigate - Interactive Folder Navigator
+# Navigate - Interactive Folder Navigator
 
-An interactive zsh script for macOS that allows you to navigate through your folder system with ease and style.
+Interactive `zsh` folder navigator for macOS. It is designed to be sourced from your shell so the final directory persists after you exit.
 
-## ✨ Features
+## Features
 
-- 📁 Lists only folders in the current directory
-- 🎯 Intuitive navigation with numbered options
-- 🔙 Easy parent directory navigation with `0`
-- 🚪 Clean exit with `q`
-- 🛡️ Protection against system root access
-- 🎨 Clean visual interface with emojis and colors
-- 🔧 Handles folder names with spaces correctly
-- 🌍 International support (English interface)
+- Lists folders with numeric shortcuts.
+- Keeps your final directory when used with `source`.
+- Supports folder names with spaces.
+- Filters folders with `/text`.
+- Searches folders recursively using `s`, without external dependencies.
+- Jumps to favorite directories.
+- Toggles hidden folders.
+- Goes up, goes back, opens Finder, and opens your editor.
+- Uses a cleaner colored terminal interface.
+- Handles directories with no folders without `zsh` glob errors.
 
-## 🚀 Usage
+## Recommended Setup
 
-### Option 1: Run from current directory
-```bash
-./navigate.sh
-```
+Add this to your `~/.zshrc`:
 
-### Option 2: Specify a starting directory
-```bash
-./navigate.sh /path/to/directory
-```
-
-### Option 3: Use with source (recommended)
-```bash
-source navigate.sh
-```
-
-## 🎮 Controls
-
-- **Numbers (1, 2, 3...)**: Enter the corresponding folder
-- **0**: Go up to parent directory
-- **q**: Exit the script
-
-## 📋 Example Usage
-
-```
-🗂️  Folder Navigator v1.0.0
-==========================
-📍 Current directory: /Users/username/Documents
-
-📁 Current directory: /Users/username/Documents
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-📂 Available folders:
-
-  1) Projects
-  2) Images
-  3) Videos
-
-🔧 Options:
-  0) 🔙 Go up one level
-  q) 🚪 Exit
-
-👉 Choose an option: 1
-
-✅ Entered: Projects
-```
-
-## 🔧 Installation
-
-1. Download the `navigate.sh` script
-2. Make it executable:
-   ```bash
-   chmod +x navigate.sh
-   ```
-3. Ready to use!
-
-### Global Installation (Optional)
-
-To use the script from anywhere:
-
-```bash
-# Copy to your PATH
-sudo cp navigate.sh /usr/local/bin/navigate
-sudo chmod +x /usr/local/bin/navigate
-
-# Now you can use it globally
-navigate
-```
-
-### Create an Alias (Recommended)
-
-Add to your `~/.zshrc` file:
-
-```bash
-# Add this line to your ~/.zshrc
+```zsh
 alias nav="source /path/to/navigate.sh"
+```
 
-# Reload your shell
+Then reload your shell:
+
+```zsh
 source ~/.zshrc
+```
 
-# Now you can use it with:
+Use it from anywhere:
+
+```zsh
+nav
+nav ~/Downloads/Proyectos
+```
+
+## Controls
+
+| Input | Action |
+| --- | --- |
+| `Up` / `Down` | Move through the folder list |
+| `Enter` | Enter the highlighted folder |
+| `1`, `2`, `3` | Enter the selected folder |
+| `0` or `..` | Go up one level |
+| `-` | Go back to the previous directory |
+| `/text` | Filter visible folders by text |
+| `/` | Clear the current filter |
+| `s` | Search folders recursively |
+| `h` | Toggle hidden folders |
+| `f` | Show favorites |
+| `o` | Open current folder in Finder |
+| `e` | Open current folder in your configured editor |
+| `.` | Stay in current folder and exit |
+| `q` | Exit |
+
+## Configuration
+
+Configure behavior with environment variables in your `~/.zshrc`.
+
+```zsh
+export NAV_FAVORITES="$HOME/Downloads/Proyectos:$HOME/Desktop:$HOME/Documents:$HOME"
+export NAV_EDITOR="code"
+export NAV_SHOW_HIDDEN=0
+export NAV_CLEAR=1
+export NAV_SEARCH_LIMIT=30
+```
+
+Available options:
+
+| Variable | Default | Description |
+| --- | --- | --- |
+| `NAV_FAVORITES` | `~/Downloads/Proyectos:~/Documents:~/Desktop:~` | Colon-separated favorite folders |
+| `NAV_EDITOR` | `$VISUAL` or `$EDITOR` | Command used by the `e` shortcut |
+| `NAV_SHOW_HIDDEN` | `0` | Set to `1` to show hidden folders by default |
+| `NAV_CLEAR` | `1` | Set to `0` to keep previous menus on screen |
+| `NAV_SEARCH_LIMIT` | `30` | Maximum recursive search results shown |
+
+## Recursive Search
+
+The `s` shortcut searches folders below the current directory using only `zsh`.
+
+Press `s`, type part of a folder name, then choose one of the numbered results.
+
+Use `/text` when you only want to filter the folders visible in the current directory.
+
+## Usage Examples
+
+Start in the current folder:
+
+```zsh
 nav
 ```
 
-## 🔄 Execution Methods
+Start in your projects folder:
 
-### Using `source` (Recommended)
-```bash
+```zsh
+nav ~/Downloads/Proyectos
+```
+
+Filter folders containing `api`:
+
+```text
+Choose an option: /api
+```
+
+Search recursively:
+
+```text
+Choose > s
+Search > api
+```
+
+Jump to a favorite:
+
+```text
+Choose an option: f
+```
+
+Open the current folder in your editor:
+
+```text
+Choose an option: e
+```
+
+## Source vs Direct Execution
+
+Recommended:
+
+```zsh
 source navigate.sh
 ```
-**Benefits:**
-- Directory changes persist in your current terminal session
-- You stay in the folder where you finish navigating
-- Perfect for quick navigation
 
-### Using `./` (Standard execution)
-```bash
+This changes the directory in your current terminal session.
+
+Direct execution also works:
+
+```zsh
 ./navigate.sh
 ```
-**Benefits:**
-- Runs in a separate subprocess
-- Doesn't affect your current terminal session
-- Safer for testing
 
-## 📝 Technical Notes
+However, direct execution runs in a subprocess, so your terminal returns to the previous directory when the script exits.
 
-- **Platform**: Designed specifically for **macOS** with **zsh**
-- **Display**: Shows only folders, not files
-- **Safety**: Includes protection to prevent navigation to system directories
-- **Error Handling**: Gracefully handles permission errors and invalid folders
-- **Array Technology**: Uses associative arrays for accurate folder mapping
+## Help
 
-## 🛠️ Requirements
+```zsh
+source navigate.sh --help
+```
+
+## Requirements
 
 - macOS
-- zsh (default shell on macOS)
-- Basic terminal permissions
+- `zsh`
 
-## 🎯 Use Cases
-
-Perfect for:
-- **Quick project navigation**: Jump between development folders
-- **File organization**: Navigate through complex directory structures
-- **Daily workflow**: Replace `cd` commands with visual navigation
-- **Learning**: Great for users new to command line navigation
-
-## 🔍 Troubleshooting
-
-### Script doesn't start
-- Check execute permissions: `chmod +x navigate.sh`
-- Verify you're using zsh: `echo $SHELL`
-
-### Folders not showing correctly
-- Ensure you have read permissions for the directory
-- Check for hidden folders with `ls -la`
-
-### Numbers don't match folders
-- This should be fixed in v2.0 with associative arrays
-- Try running the script fresh
-
-## 🤝 Contributing
-
-Feel free to suggest improvements or report issues!
-
-## 📄 License
+## License
 
 [Apache License](LICENSE)
 
 ---
 
-**Arturo Carretero Calvo - 2025**
+Arturo Carretero Calvo - 2026
